@@ -29,8 +29,7 @@ services:
       sh -c "
       npx prisma migrate dev
       && npx prisma db seed --preview-feature
-      && npm run dev
-      && npm run dev:grpc"
+      && npm run dev"
     env_file:
       - ./apps/poc-app/.env
     ports:
