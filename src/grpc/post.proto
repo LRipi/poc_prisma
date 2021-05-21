@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+package post;
+
+message Post {
+  int32 id = 1;
+  google.protobuf.Timestamp createdAt = 2;
+  google.protobuf.Timestamp updatedAt = 3;
+  bool published = 4;
+  string title = 5;
+  string content = 6;
+  int32 authorId = 7;
+}
+
+message PostRequest {
+  int32 id = 1;
+}
+
+service PostService {
+  rpc GetPost (PostRequest) returns (Post) {}
+}
+
