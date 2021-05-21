@@ -19,8 +19,8 @@ services:
     ports:
       - '8080:8080'
 
-  poc-app:
-    container_name: poc-app
+  server-gql:
+    container_name: server-gql
     image: node:14.15.1
     depends_on:
       - db
@@ -31,11 +31,30 @@ services:
       && npx prisma db seed --preview-feature
       && npm run dev"
     env_file:
-      - ./apps/poc-app/.env
+      - server-gql/.env
     ports:
       - 4000:4000
+    volumes:
+      - ./server-gql/:/home/node/app
+      - ./prisma/:/home/node/app/prisma
+    working_dir: /home/node/app
+    restart: unless-stopped
+
+  server-rpc:
+    container_name: server-rpc
+    image: node:14.15.1
+    depends_on:
+      - server-gql
+    command: >
+      sh -c "
+      npx prisma generate
+      && npm run dev"
+    env_file:
+      - server-rpc/.env
+    ports:
       - 4001:4001
     volumes:
-      - ./apps/poc-app/:/home/node/app
+      - ./server-rpc/:/home/node/app
+      - ./prisma/:/home/node/app/prisma
     working_dir: /home/node/app
     restart: unless-stopped

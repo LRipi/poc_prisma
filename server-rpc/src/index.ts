@@ -1,7 +1,7 @@
 import * as grpc from '@grpc/grpc-js'
 import * as protoLoader from '@grpc/proto-loader'
 import * as env from 'env-var'
-import prismaClient from '../../prisma/client'
+import prismaClient from './prisma/client'
 
 const PROTO_PATH = __dirname + '/post.proto'
 

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "postinstall": "cd apps/poc-app && npm install"
+    "postinstall": "(cd server-gql && npm install); (cd server-rpc && npm install);"
   },
   "author": "",
   "license": "ISC"
