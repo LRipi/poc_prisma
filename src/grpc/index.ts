@@ -2,6 +2,7 @@ import * as grpc from '@grpc/grpc-js'
 import * as protoLoader from '@grpc/proto-loader'
 import * as env from 'env-var'
 import prismaClient from '../../prisma/client'
+import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb'
 
 const PROTO_PATH = __dirname + '/post.proto'
 
@@ -27,7 +28,12 @@ async function getPost(call: any, callback: any) {
   const post = await prismaClient.post.findUnique({
     where: { id: call.request.id },
   })
-  callback(null, { message: post })
+  if (post) {
+    const protoPost = { ...post, createdAt: Timestamp.fromDate(post.createdAt) }
+    callback(null, { post: protoPost })
+    return
+  }
+  callback(null, { post: null })
 }
 
 ;(() => {

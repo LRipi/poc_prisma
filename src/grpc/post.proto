@@ -18,7 +18,11 @@ message PostRequest {
   int32 id = 1;
 }
 
+message PostReply {
+  Post post = 1;
+}
+
 service PostService {
-  rpc GetPost (PostRequest) returns (Post) {}
+  rpc GetPost (PostRequest) returns (PostReply) {}
 }
 
