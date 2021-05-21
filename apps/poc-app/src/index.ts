@@ -9,6 +9,7 @@ import { logRequestIn, logResponseOut, error } from './middlewares'
 import { logError } from './listeners'
 import { context } from './api'
 import { schema } from './nexus'
+import { createRPCServer } from './grpc'
 
 let PORT: number
 try {
@@ -72,5 +73,12 @@ router.get('/', (ctx) => {
     .use(router.routes())
     .use(router.allowedMethods())
     .use(server.getMiddleware({ bodyParserConfig: false }))
-    .listen(PORT, () => console.log(`▲ prisma poc running on port ${PORT} ▲`))
+    .listen(PORT, async () => {
+      console.log(`▲ prisma poc running on port ${PORT} ▲`)
+      try {
+        await createRPCServer();
+      } catch (e) {
+        console.error(e);
+      }
+    })
 })()

@@ -30,15 +30,25 @@ async function getPost(call: any, callback: any) {
   callback(null, { message: post })
 }
 
-;(() => {
-  const server = new grpc.Server()
-  server.addService(post.PostService.service, { getPost })
-  server.bindAsync(
-    `localhost:${PORT}`,
-    grpc.ServerCredentials.createInsecure(),
-    () => {
-      server.start()
-      console.log(`▲ gRPC server running on port ${PORT} ▲`)
-    }
-  )
-})()
+const createRPCServer = () => {
+  return new Promise(((resolve, reject) => {
+    const server = new grpc.Server()
+    server.addService(post.PostService.service, { getPost })
+    server.bindAsync(
+      `localhost:${PORT}`,
+      grpc.ServerCredentials.createInsecure(),
+      (error) => {
+        if (error) {
+          reject(error)
+        }
+        server.start()
+        resolve(server)
+        console.log(`▲ gRPC server running on port ${PORT} ▲`)
+      }
+    )
+  }))
+}
+
+export {
+  createRPCServer,
+}
