@@ -1,0 +1,4 @@
+src/generated
+prisma/schema.prisma
+prisma/migrations
+dist
