@@ -18,3 +18,25 @@ services:
       PGADMIN_LISTEN_PORT: ${PGADMIN_LISTEN_PORT}
     ports:
       - '8080:8080'
+
+  poc-app:
+    container_name: poc-app
+    image: node:14.15.1
+    depends_on:
+      - db
+      - dbadmin
+    command: >
+      sh -c "
+      npx prisma migrate dev
+      && npx prisma db seed --preview-feature
+      && npm run dev
+      && npm run dev:grpc"
+    env_file:
+      - ./apps/poc-app/.env
+    ports:
+      - 4000:4000
+      - 4001:4001
+    volumes:
+      - ./apps/poc-app/:/home/node/app
+    working_dir: /home/node/app
+    restart: unless-stopped
