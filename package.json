@@ -13,7 +13,8 @@
     "lint": "npm run lint:tsc && npm run lint:eslint",
     "lint:eslint": "eslint --ext .js,.jsx,.ts,.tsx ./",
     "lint:fix": "eslint --ext .js,.jsx,.ts,.tsx ./ --fix",
-    "lint:tsc": "tsc --noEmit"
+    "lint:tsc": "tsc --noEmit",
+    "grpc:typesgen": "npx proto-loader-gen-types --keep-case --longs=String --enums=String --defaults --oneofs --grpcLib=@grpc/grpc-js --outDir=src/grpc/generated/ src/grpc/proto/*.proto"
   },
   "author": "",
   "license": "ISC",

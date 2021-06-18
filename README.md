@@ -19,6 +19,12 @@ seed the db
 npx prisma db seed --preview-feature
 ```
 
+generate TypeScript types for gRPC proto objects
+
+```
+npm run grpc:typesgen
+```
+
 #### run
 
 ```

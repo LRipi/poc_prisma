@@ -3,8 +3,11 @@ import * as protoLoader from '@grpc/proto-loader'
 import * as env from 'env-var'
 import prismaClient from '../../prisma/client'
 import { Timestamp } from 'google-protobuf/google/protobuf/timestamp_pb'
+import { ProtoGrpcType } from './generated/post'
+import { PostServiceHandlers } from './generated/post/PostService'
+import { PostReply } from './generated/post/PostReply'
 
-const PROTO_PATH = __dirname + '/post.proto'
+const PROTO_PATH = __dirname + '/proto/post.proto'
 
 let PORT: number
 try {
@@ -22,26 +25,32 @@ const packageDefinition = protoLoader.loadSync(PROTO_PATH, {
   oneofs: true,
 })
 
-const post = grpc.loadPackageDefinition(packageDefinition).post
+const grpcObjects = grpc.loadPackageDefinition(
+  packageDefinition
+) as unknown as ProtoGrpcType
 
-async function getPost(call: any, callback: any) {
-  const post = await prismaClient.post.findUnique({
-    where: { id: call.request.id },
-  })
-  if (post) {
-    const protoPost = {
-      ...post,
-      createdAt: Timestamp.fromDate(post.createdAt),
+const handler: PostServiceHandlers = {
+  async GetPost(call, callback) {
+    const post = await prismaClient.post.findUnique({
+      where: { id: call.request.id },
+    })
+    if (post) {
+      const protoPost: PostReply = {
+        post: {
+          ...post,
+          createdAt: Timestamp.fromDate(post.createdAt),
+        },
+      }
+      callback(null, protoPost)
+      return
     }
-    callback(null, { post: protoPost })
-    return
-  }
-  callback(null, { post: null })
+    callback(null, { post: null })
+  },
 }
 
 ;(() => {
   const server = new grpc.Server()
-  server.addService(post.PostService.service, { getPost })
+  server.addService(grpcObjects.post.PostService.service, handler)
   server.bindAsync(
     `localhost:${PORT}`,
     grpc.ServerCredentials.createInsecure(),
