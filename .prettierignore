@@ -1,4 +1,4 @@
-src/generated
+**/generated
 prisma/schema.prisma
 prisma/migrations
 dist

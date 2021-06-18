@@ -29,7 +29,10 @@ async function getPost(call: any, callback: any) {
     where: { id: call.request.id },
   })
   if (post) {
-    const protoPost = { ...post, createdAt: Timestamp.fromDate(post.createdAt) }
+    const protoPost = {
+      ...post,
+      createdAt: Timestamp.fromDate(post.createdAt),
+    }
     callback(null, { post: protoPost })
     return
   }
